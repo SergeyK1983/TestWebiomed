@@ -29,10 +29,39 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
 
+    'corsheaders',
+
     'checks.apps.ChecksConfig',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    'DATETIME_FORMAT': "%d.%m.%Y %H:%M:%S",
+}
+
+CORS_ORIGIN_ALLOW_ALL = True  # added to solve CORS
+CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
+                      'content-type', 'accept', 'origin', 'Authorization',
+                      'access-control-allow-methods', 'access-control-allow-origin',
+                      'access-control-allow-credentials', 'attribution-reporting',
+                      )
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,7 +92,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'producer.wsgi.application'
-
 
 # Database
 DATABASES = {
