@@ -16,7 +16,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    """ Транзакции """
+    """ Транзакция (чек) """
 
     items = ProductSerializer(many=True)
 

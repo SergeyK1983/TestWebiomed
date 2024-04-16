@@ -13,6 +13,8 @@ class TransList(generics.ListAPIView):
 
 
 class TransactionCreateAPIView(generics.CreateAPIView):
+    """ Прием чеков покупок с клиентов. Запись в БД. """
+
     permission_classes = [permissions.AllowAny]
     renderer_classes = [JSONRenderer]
     serializer_class = TransactionSerializer
