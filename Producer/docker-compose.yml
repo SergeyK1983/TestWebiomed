@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  pgdb:
+    container_name: pgdb_prod
+    image: postgres:15.4-alpine
+    restart: always
+    env_file:
+      - ./producer/.env
+    environment:
+      - ./producer/.env
+    volumes:
+      - pgdb_pr:/var/lib/postgresql/data
+    ports:
+      - "5437:5432"
+
+volumes:
+  pgdb_pr:
