@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
 
     'corsheaders',
+    'rest_framework',
 
     'checks.apps.ChecksConfig',
 ]
