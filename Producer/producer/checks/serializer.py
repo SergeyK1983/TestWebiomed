@@ -33,13 +33,12 @@ class TransactionSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        # print("context: ", self.context['request'].data)
         items = validated_data.pop("items", [])
         instance = Transaction.objects.create(**validated_data)
 
         list(map(lambda x: x.update({"transaction": instance}), items))
-        list_products = [Product(**items[i]) for i in range(len(items))]
-        Product.objects.bulk_create(list_products)
+        products = [Product(**items[i]) for i in range(len(items))]
+        Product.objects.bulk_create(products)
 
         return instance
 
