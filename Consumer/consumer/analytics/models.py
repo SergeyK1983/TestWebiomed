@@ -50,6 +50,7 @@ class PurchaseLocation(models.Model):
     place_name = models.CharField(max_length=150, verbose_name="Название места покупки")
     total_purchases = models.IntegerField(default=0, verbose_name="Кол-во покупок")
     average_receipt = models.DecimalField(default=0, max_digits=12, decimal_places=2, verbose_name="Средний чек")
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата записи')
 
     class Meta:
         verbose_name = "Покупка"
@@ -62,7 +63,7 @@ class PurchaseLocation(models.Model):
 
     def get_average_receipt(self):
         average_receipt = Check.objects.filter(place_id=self.place_id).aggregate(Avg('total_amount'))
-        return average_receipt
+        return average_receipt["total_amount__avg"]
 
     def __str__(self):
         return f"Покупки от: {self.place_name}"
@@ -75,6 +76,7 @@ class Taxes(models.Model):
                                  on_delete=models.CASCADE, verbose_name="Налоги и чаевые")
     total_nds = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма НДС за время")
     total_tips = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма чаевых за время")
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата записи')
 
     class Meta:
         verbose_name = "Налог"
@@ -87,8 +89,8 @@ class Taxes(models.Model):
         total_nds = Check.objects.filter(
             place_id=self.location.place_id,
             date_create__gte=time_
-        ).aggregate(Sum('nds_amount'))
-        return total_nds  # {'nds_amount__sum': Decimal('7.41')}
+        ).aggregate(Sum("nds_amount"))
+        return total_nds["nds_amount__sum"]  # {'nds_amount__sum': Decimal('7.41')}
 
     def get_total_tips(self, time_now):
         time_ = time_now - timedelta(hours=1)
@@ -97,7 +99,7 @@ class Taxes(models.Model):
             place_id=self.location.place_id,
             date_create__gte=time_
         ).aggregate(Sum('tips_amount'))
-        return total_tips  # {'tips_amount__sum': Decimal('7.41')}
+        return total_tips["tips_amount__sum"]  # {'tips_amount__sum': Decimal('7.41')}
 
     def __str__(self):
         return f"Налоги от: {self.location}"
@@ -109,6 +111,7 @@ class Category(models.Model):
     location = models.ForeignKey(to=PurchaseLocation, to_field="place_id", related_name="category_analytics",
                                  on_delete=models.CASCADE, verbose_name="место покупки")
     category = models.CharField(max_length=150, verbose_name="категория")
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата записи')
 
     class Meta:
         verbose_name = "Категория"
@@ -127,6 +130,7 @@ class CategoryAnalytic(models.Model):
     total_spent = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма за время")
     average_receipt = models.DecimalField(max_digits=12, decimal_places=2, default=0,
                                           verbose_name="Средний чек по категории")
+    date_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата записи')
 
     class Meta:
         verbose_name = "Данные по категории"

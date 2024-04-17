@@ -13,22 +13,22 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class PurchaseLocationAdmin(admin.ModelAdmin):
-    list_display = ("id", "place_id", "place_name", "total_purchases", "average_receipt")
+    list_display = ("id", "place_id", "place_name", "total_purchases", "average_receipt", "date_create")
     ordering = ("place_name", )
 
 
 class TaxesAdmin(admin.ModelAdmin):
-    list_display = ("id", "location", "total_nds", "total_tips")
+    list_display = ("id", "location", "total_nds", "total_tips", "date_create")
     ordering = ("location", )
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "location", "category")
+    list_display = ("id", "location", "category", "date_create")
     ordering = ("location", )
 
 
 class CategoryAnalyticAdmin(admin.ModelAdmin):
-    list_display = ("id", "cat", "total_spent", "average_receipt")
+    list_display = ("id", "cat", "total_spent", "average_receipt", "date_create")
     ordering = ("cat", )
 
 
