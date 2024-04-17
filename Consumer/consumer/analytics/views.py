@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from .models import Check, Product, PurchaseLocation, Taxes, Category, CategoryAnalytic
 from .serializer import CheckSerializer
+from .services import create_purchase_or_add_category
 
 
 class ChecksCreateAPIView(generics.CreateAPIView):
@@ -17,7 +18,9 @@ class ChecksCreateAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+
+        create_purchase_or_add_category(instance)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
