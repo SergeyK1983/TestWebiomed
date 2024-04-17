@@ -10,32 +10,6 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ["quantity", "price", "category"]
 
 
-# {
-#     "transaction_id": "unique_transaction_id17",
-#     "timestamp": "2024-02-07T12:34:56",
-#     "items": [
-#         {
-#             "product_id": "product_id_1",
-#             "quantity": 2,
-#             "price": 0,
-#             "category": "groceries"
-#         },
-#         {
-#             "product_id": "product_id_2",
-#             "quantity": 1,
-#             "price": 5.49,
-#             "category": "electronics"
-#         }
-#     ],
-#     "total_amount": 0,
-#     "nds_amount": 2.47,
-#     "tips_amount": 3.0,
-#     "payment_method": "credit_card"
-#     "place_id": ""
-#     "place_name": ""
-# }
-
-
 class CheckSerializer(serializers.ModelSerializer):
     """ Приходящий чек """
 
@@ -56,4 +30,45 @@ class CheckSerializer(serializers.ModelSerializer):
         return instance
 
 
+class PurchaseLocationSerializer(serializers.ModelSerializer):
+    """ Список мест покупок """
+    class Meta:
+        model = PurchaseLocation
+        fields = ["place_id", "place_name", "date_create"]
 
+
+class TaxesSerializer(serializers.ModelSerializer):
+    """ Налоги и чаевые """
+
+    class Meta:
+        model = Taxes
+        fields = ["total_nds", "total_tips", "date_create"]
+
+
+class CategoryAnalyticSerializer(serializers.ModelSerializer):
+    """ Аналитика по категориям """
+
+    class Meta:
+        model = CategoryAnalytic
+        fields = ["total_spent", "average_receipt", "date_create"]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """ Категории товаров в покупках """
+
+    cat_analytics = CategoryAnalyticSerializer(many=True)
+
+    class Meta:
+        model = Category
+        fields = ["category", "cat_analytics"]
+
+
+class AnalyticSerializer(serializers.ModelSerializer):
+    """ Общая аналитика """
+
+    taxes_amount = TaxesSerializer(many=True)
+    category_analytics = CategorySerializer(many=True)
+
+    class Meta:
+        model = PurchaseLocation
+        fields = ["place_id", "place_name", "place_name", "total_purchases", "taxes_amount", "category_analytics"]

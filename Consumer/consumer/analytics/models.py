@@ -90,7 +90,7 @@ class Taxes(models.Model):
             place_id=self.location.place_id,
             date_create__gte=time_
         ).aggregate(Sum("nds_amount"))
-        return total_nds["nds_amount__sum"]  # {'nds_amount__sum': Decimal('7.41')}
+        return total_nds["nds_amount__sum"]
 
     def get_total_tips(self, time_now):
         time_ = time_now - timedelta(hours=1)
@@ -99,7 +99,7 @@ class Taxes(models.Model):
             place_id=self.location.place_id,
             date_create__gte=time_
         ).aggregate(Sum('tips_amount'))
-        return total_tips["tips_amount__sum"]  # {'tips_amount__sum': Decimal('7.41')}
+        return total_tips["tips_amount__sum"]
 
     def __str__(self):
         return f"Налоги от: {self.location}"

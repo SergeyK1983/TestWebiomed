@@ -3,8 +3,24 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from .models import Check, Product, PurchaseLocation, Taxes, Category, CategoryAnalytic
-from .serializer import CheckSerializer
+from .serializer import CheckSerializer, PurchaseLocationSerializer, AnalyticSerializer
 from .services import create_purchase_or_add_category
+
+
+class PurchaseListAPIView(generics.ListAPIView):
+    """ Список мест покупок """
+
+    permission_classes = [permissions.AllowAny]
+    serializer_class = PurchaseLocationSerializer
+    queryset = PurchaseLocation.objects.all()
+
+
+class AnalyticListAPIView(generics.ListAPIView):
+    """ Общая аналитика """
+
+    permission_classes = [permissions.AllowAny]
+    serializer_class = AnalyticSerializer
+    queryset = PurchaseLocation.objects.all()
 
 
 class ChecksCreateAPIView(generics.CreateAPIView):
