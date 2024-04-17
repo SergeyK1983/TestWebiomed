@@ -1,32 +1,7 @@
-from django.core.validators import MinValueValidator
+from datetime import timedelta
 from django.db import models
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 
-
-# {
-#     "transaction_id": "unique_transaction_id17",
-#     "timestamp": "2024-02-07T12:34:56",
-#     "items": [
-#         {
-#             "product_id": "product_id_1",
-#             "quantity": 2,
-#             "price": 0,
-#             "category": "groceries"
-#         },
-#         {
-#             "product_id": "product_id_2",
-#             "quantity": 1,
-#             "price": 5.49,
-#             "category": "electronics"
-#         }
-#     ],
-#     "total_amount": 0,
-#     "nds_amount": 2.47,
-#     "tips_amount": 3.0,
-#     "payment_method": "credit_card"
-#     "place_id": ""
-#     "place_name": ""
-# }
 
 # Приходящие чеки
 class Check(models.Model):
@@ -106,6 +81,24 @@ class Taxes(models.Model):
         verbose_name_plural = "Налоги"
         ordering = ["id", "location"]
 
+    def get_total_nds(self, time_now):
+        time_ = time_now - timedelta(hours=1)
+
+        total_nds = Check.objects.filter(
+            place_id=self.location.place_id,
+            date_create__gte=time_
+        ).aggregate(Sum('nds_amount'))
+        return total_nds  # {'nds_amount__sum': Decimal('7.41')}
+
+    def get_total_tips(self, time_now):
+        time_ = time_now - timedelta(hours=1)
+
+        total_tips = Check.objects.filter(
+            place_id=self.location.place_id,
+            date_create__gte=time_
+        ).aggregate(Sum('tips_amount'))
+        return total_tips  # {'tips_amount__sum': Decimal('7.41')}
+
     def __str__(self):
         return f"Налоги от: {self.location}"
 
@@ -131,13 +124,27 @@ class CategoryAnalytic(models.Model):
 
     cat = models.ForeignKey(to=Category, related_name="cat_analytics", on_delete=models.CASCADE,
                             verbose_name="Категории")
-    total_spent = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Сумма за время")
-    average_receipt = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Средний чек по категории")
+    total_spent = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма за время")
+    average_receipt = models.DecimalField(max_digits=12, decimal_places=2, default=0,
+                                          verbose_name="Средний чек по категории")
 
     class Meta:
         verbose_name = "Данные по категории"
         verbose_name_plural = "Данные по категориям"
         ordering = ["id", "cat"]
 
+    def get_total_spent_and_average_receipt(self, time_now) -> dict:
+        time_ = time_now - timedelta(hours=1)
+        checks = Check.objects.filter(place_id=self.cat.location.place_id, date_create__gte=time_)
+        total_spent = 0
+        for var in checks:
+            product = var.items.get(category=self.cat.category)
+            total_cost = product.price * product.quantity
+            total_spent += total_cost
+
+        average_receipt = round(total_spent / len(checks), 2)
+
+        return {"total_spent": total_spent, "average_receipt": average_receipt}
+
     def __str__(self):
-        return f"Категории: {self.location}"
+        return f"Категории-аналитика: {self.cat}"
