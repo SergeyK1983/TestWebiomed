@@ -46,7 +46,7 @@ class Check(models.Model):
         ordering = ["id", "place_id"]
 
     def __str__(self):
-        return f"Чек id: {self.place_id}, время: {self.date_create}"
+        return f"Чек name: {self.place_name}"
 
 
 class Product(models.Model):
@@ -90,7 +90,7 @@ class PurchaseLocation(models.Model):
         return average_receipt
 
     def __str__(self):
-        return f"Налоги от: {self.place_name}"
+        return f"Покупки от: {self.place_name}"
 
 
 class Taxes(models.Model):
