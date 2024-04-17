@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  pgdb:
+    container_name: pgdb_cons
+    image: postgres:15.4-alpine
+    restart: always
+    env_file:
+      - ./consumer/.env
+    environment:
+      - ./consumer/.env
+    volumes:
+      - pgdb:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+
+volumes:
+  pgdb:
