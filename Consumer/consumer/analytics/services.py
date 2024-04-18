@@ -5,17 +5,21 @@ from .models import PurchaseLocation, Category, Taxes, CategoryAnalytic
 def create_category(items) -> None:
     """ Создание записи в модели Category """
 
-    categories = [Category(**items[i]) for i in range(len(items))]
+    volume = range(len(items))
+    categories = [Category(**items[i]) for i in volume]
     Category.objects.bulk_create(categories)
     return None
 
 
 def create_purchase_or_add_category(instance) -> None:
-    """ Создание записи о новом месте покупки и соответствующих категориях, либо добавление новой категории товара """
-
+    """
+    Создание записи о новом месте покупки и соответствующих категориях, либо добавление новой категории товара.
+    Используется в ChecksCreateAPIView.
+    """
     products = instance.items.all()
 
     if PurchaseLocation.objects.filter(place_id=instance.place_id).exists():
+
         purchase = PurchaseLocation.objects.get(place_id=instance.place_id)
         categories = purchase.category_analytics.all().values("category")
         category_name = list(map(lambda x: x.get("category"), categories))
@@ -26,7 +30,11 @@ def create_purchase_or_add_category(instance) -> None:
         if cat_in_products:
             create_category(cat_in_products)
     else:
-        purchase = PurchaseLocation.objects.create(place_id=instance.place_id, place_name=instance.place_name)
+        purchase = PurchaseLocation.objects.create(
+            place_id=instance.place_id,
+            place_name=instance.place_name
+        )
+
         cat_in_products = [{"location": purchase, "category": i.category} for i in products]
         create_category(cat_in_products)
     return None
@@ -63,17 +71,19 @@ def category_analytic_methods(value, time_now):
 
 
 def get_analytic_methods():
-    """ Расчет значений аналитических методов и запись в БД """
+    """ Расчет значений аналитических методов и запись в БД. Используется в tasks.calculate_analytic(). """
 
     time_now = datetime.now()
     purchase = PurchaseLocation.objects.all()
     categories = Category.objects.all()
 
-    for value in purchase:
-        purchase_location_methods(value)
-        taxes_methods(value, time_now)
+    if purchase:
+        for value in purchase:
+            purchase_location_methods(value)
+            taxes_methods(value, time_now)
 
-    for value in categories:
-        category_analytic_methods(value, time_now)
+    if categories:
+        for value in categories:
+            category_analytic_methods(value, time_now)
 
     return None

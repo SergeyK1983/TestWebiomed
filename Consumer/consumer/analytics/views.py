@@ -2,7 +2,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
-from .models import Check, Product, PurchaseLocation, Taxes, Category, CategoryAnalytic
+from .models import PurchaseLocation
 from .serializer import CheckSerializer, PurchaseLocationSerializer, AnalyticSerializer
 from .services import create_purchase_or_add_category
 

@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'rest_framework',
+    'django_celery_beat',
 
     'analytics.apps.AnalyticsConfig',
 ]
@@ -144,3 +145,27 @@ else:
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Redis
+REDIS_HOST = '127.0.0.1' if DEBUG else os.getenv('REDIS_HOST', '127.0.0.1')
+REDIS_PORT = '6379' if DEBUG else os.getenv('REDIS_PORT', '6379')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/1'  # 'redis://127.0.0.1:6379/1',
+    }
+}
+
+# Celery
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_CONNECTION_RETRY = True
+CELERY_BROKER_CONNECTION_MAX_RETRIES = 5
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
