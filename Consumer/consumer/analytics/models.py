@@ -102,6 +102,9 @@ class Taxes(models.Model):
             place_id=self.location.place_id,
             date_create__gte=time_
         ).aggregate(Sum("nds_amount"))
+
+        if total_nds["nds_amount__sum"] is None:
+            return 0
         return total_nds["nds_amount__sum"]
 
     def get_total_tips(self, time_now):
@@ -111,6 +114,9 @@ class Taxes(models.Model):
             place_id=self.location.place_id,
             date_create__gte=time_
         ).aggregate(Sum('tips_amount'))
+
+        if total_tips["tips_amount__sum"] is None:
+            return 0
         return total_tips["tips_amount__sum"]
 
     def __str__(self):
@@ -153,12 +159,13 @@ class CategoryAnalytic(models.Model):
         time_ = time_now - timedelta(hours=1)
         checks = Check.objects.filter(place_id=self.cat.location.place_id, date_create__gte=time_)
         total_spent = 0
-        for var in checks:
-            product = var.items.get(category=self.cat.category)
-            total_cost = product.price * product.quantity
-            total_spent += total_cost
+        if checks:
+            for var in checks:
+                product = var.items.get(category=self.cat.category)
+                total_cost = product.price * product.quantity
+                total_spent += total_cost
 
-        average_receipt = round(total_spent / len(checks), 2)
+        average_receipt = round(total_spent / len(checks), 2) if len(checks) != 0 else 0
 
         return {"total_spent": total_spent, "average_receipt": average_receipt}
 
