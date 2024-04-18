@@ -29,7 +29,9 @@ class TransactionSerializer(serializers.ModelSerializer):
             "total_amount",
             "nds_amount",
             "tips_amount",
-            "payment_method"
+            "payment_method",
+            "place_id",
+            "place_name",
         ]
 
     def create(self, validated_data):

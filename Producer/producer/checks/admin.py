@@ -3,7 +3,8 @@ from .models import Product, Transaction
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ("id", "transaction_id", "timestamp", "total_amount", "nds_amount", "tips_amount", "payment_method")
+    list_display = ("id", "transaction_id", "timestamp", "total_amount", "nds_amount", "tips_amount", "payment_method",
+                    "place_id", "place_name")
     ordering = ("transaction_id", "timestamp")
 
 

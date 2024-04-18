@@ -14,6 +14,8 @@ class Transaction(models.Model):
     tips_amount = models.DecimalField(validators=[MinValueValidator(0.00)], max_digits=9, decimal_places=2,
                                       null=True, blank=True, verbose_name="сумма чаевых")
     payment_method = models.CharField(max_length=20, verbose_name="метод оплаты")
+    place_id = models.CharField(max_length=150, verbose_name="Идентификатор места")
+    place_name = models.CharField(max_length=150, verbose_name="Название места покупки")
 
     class Meta:
         verbose_name = "Транзакция"
