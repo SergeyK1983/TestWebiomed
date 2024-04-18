@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Check, Product, PurchaseLocation, Taxes, Category, CategoryAnalytic
+from .models import Check, Product, PurchaseLocation, Taxes, Category, CategoryAnalytic, User
 
 
 class CheckAdmin(admin.ModelAdmin):
@@ -32,9 +32,18 @@ class CategoryAnalyticAdmin(admin.ModelAdmin):
     ordering = ("cat", )
 
 
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("id", "username", "first_name", "last_name", "email", "is_superuser", "is_staff", "analytic")
+    list_editable = ("analytic", )
+    list_display_links = ("username",)
+    search_fields = ("username", "first_name")
+    list_filter = ("is_superuser", "is_staff")
+
+
 admin.site.register(Check, CheckAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(PurchaseLocation, PurchaseLocationAdmin)
 admin.site.register(Taxes, TaxesAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(CategoryAnalytic, CategoryAnalyticAdmin)
+admin.site.register(User, UserAdmin)

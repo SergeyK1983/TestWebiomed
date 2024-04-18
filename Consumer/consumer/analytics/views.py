@@ -10,7 +10,7 @@ from .services import create_purchase_or_add_category
 class PurchaseListAPIView(generics.ListAPIView):
     """ Список мест покупок """
 
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = PurchaseLocationSerializer
     queryset = PurchaseLocation.objects.all()
 
@@ -18,20 +18,34 @@ class PurchaseListAPIView(generics.ListAPIView):
 class AnalyticListAPIView(generics.ListAPIView):
     """ Общая аналитика """
 
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = AnalyticSerializer
     queryset = PurchaseLocation.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user.analytic:
+            data = {"detail": "Пользователь не имеет доступа"}
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        return self.list(request, *args, **kwargs)
 
 
 class AnalyticPurchaseLocationListAPIView(generics.ListAPIView):
     """ Общая аналитика для места покупки """
 
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = AnalyticSerializer
 
     def get_queryset(self):
         queryset = PurchaseLocation.objects.filter(place_id=self.kwargs["place_id"])
         return queryset
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user.analytic:
+            data = {"detail": "Пользователь не имеет доступа"}
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        return self.list(request, *args, **kwargs)
 
 
 class ChecksCreateAPIView(generics.CreateAPIView):

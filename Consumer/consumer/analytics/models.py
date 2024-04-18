@@ -1,7 +1,15 @@
 from datetime import timedelta
+from django.contrib.auth.models import AbstractUser
 from django.shortcuts import reverse
 from django.db import models
 from django.db.models import Avg, Sum
+
+
+class User(AbstractUser):
+    analytic = models.BooleanField(default=False, verbose_name="Аналитик")
+
+    def __str__(self):
+        return f"{self.id} - {self.username}"
 
 
 # Приходящие чеки

@@ -15,6 +15,8 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
+AUTH_USER_MODEL = "analytics.User"
+
 SITE_ID = 1
 
 # Application definition
@@ -34,12 +36,24 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
 
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+
     'analytics.apps.AnalyticsConfig',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
 
     'DEFAULT_PARSER_CLASSES': [
@@ -63,6 +77,13 @@ CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
                       'access-control-allow-credentials', 'attribution-reporting',
                       )
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMAIL_REQUIRED = False
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -74,6 +95,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'consumer.urls'
@@ -169,3 +191,15 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+# dj-rest-auth
+REST_AUTH = {
+   'REGISTER_SERIALIZER': 'dj_rest_auth.registration.serializers.RegisterSerializer',
+   'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',
+   'TOKEN_SERIALIZER': 'dj_rest_auth.serializers.TokenSerializer',
+   'PASSWORD_CHANGE_SERIALIZER': 'dj_rest_auth.serializers.PasswordChangeSerializer',
+
+   'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
+   'TOKEN_CREATOR': 'dj_rest_auth.utils.default_create_token',
+
+   'SESSION_LOGIN': True,
+}
