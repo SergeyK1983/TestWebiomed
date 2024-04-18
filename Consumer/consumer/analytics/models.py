@@ -1,4 +1,5 @@
 from datetime import timedelta
+from django.shortcuts import reverse
 from django.db import models
 from django.db.models import Avg, Sum
 
@@ -67,6 +68,9 @@ class PurchaseLocation(models.Model):
 
     def __str__(self):
         return f"Покупки от: {self.place_name}"
+
+    def get_absolute_url(self):
+        return reverse(viewname='analytics-place-id', kwargs={'place_id': self.place_id})
 
 
 class Taxes(models.Model):

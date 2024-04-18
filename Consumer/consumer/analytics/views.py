@@ -23,6 +23,17 @@ class AnalyticListAPIView(generics.ListAPIView):
     queryset = PurchaseLocation.objects.all()
 
 
+class AnalyticPurchaseLocationListAPIView(generics.ListAPIView):
+    """ Общая аналитика для места покупки """
+
+    permission_classes = [permissions.AllowAny]
+    serializer_class = AnalyticSerializer
+
+    def get_queryset(self):
+        queryset = PurchaseLocation.objects.filter(place_id=self.kwargs["place_id"])
+        return queryset
+
+
 class ChecksCreateAPIView(generics.CreateAPIView):
     """ Прием чеков покупок. Запись в БД. """
 
