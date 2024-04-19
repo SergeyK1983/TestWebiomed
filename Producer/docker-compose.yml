@@ -14,5 +14,37 @@ services:
     ports:
       - "5437:5432"
 
+  django:
+    container_name: backend_producer
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: producer_backend:latest
+    volumes:
+      - static_volume:/var/www/producer/static
+      - media_volume:/var/www/producer/media
+    env_file:
+      - ./producer/.env
+    expose:
+      - 8000
+    depends_on:
+      - pgdb
+
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./docker/nginx/
+    container_name: nginx_producer
+    image: nginx-producer:latest
+    volumes:
+      - static_volume:/var/www/producer/static
+      - media_volume:/var/www/producer/media
+    ports:
+      - "8000:80"
+    depends_on:
+      - django
+
 volumes:
+  static_volume:
+  media_volume:
   pgdb_pr:

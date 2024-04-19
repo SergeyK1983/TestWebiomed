@@ -17,10 +17,42 @@ services:
   redis:
     image: redis
     container_name: redis
-#    expose:
-#      - 6379
+    expose:
+      - 6379
+#    ports:
+#      - "6379:6379"
+
+  django:
+    container_name: backend_consumer
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: consumer_backend:latest
+    volumes:
+      - static_volume:/var/www/consumer/static
+      - media_volume:/var/www/consumer/media
+    env_file:
+      - ./consumer/.env
+    expose:
+      - 9000
+    depends_on:
+      - pgdb
+
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./docker/nginx/
+    container_name: nginx_consumer
+    image: nginx-consumer:latest
+    volumes:
+      - static_volume:/var/www/consumer/static
+      - media_volume:/var/www/consumer/media
     ports:
-      - "6379:6379"
+      - "9000:80"
+    depends_on:
+      - django
 
 volumes:
+  static_volume:
+  media_volume:
   pgdb:
