@@ -15,6 +15,15 @@ API: Django - Django REST framework - PostgreSQL - Nginx - Docker\
 ___
 
 Развертывание:
+
+После клонирования файлы:
+  - Consumer/consumer/django_db_wait.sh
+  - Consumer/consumer/django_init.sh
+  - Producer/producer/django_db_wait.sh
+  - Producer/producer/django_init.sh
+
+открыть в редакторе Notepad++ и через раздел Правка -> Формат Конца Строк -> Преобразовать в Unix (LF), сохранить.\
+далее:
 1. Из корневой директории "docker-compose up -d" (контейнер с Apache Kafka)
 2. Из директории Producer "docker-compose up -d" (контейнер с 1 сервисом)
 3. Из директории Consumer "docker-compose up -d" (контейнер со 2 сервисом)
