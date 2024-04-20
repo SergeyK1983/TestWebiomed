@@ -18,7 +18,7 @@ else:
 if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 else:
-    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:9000', 'https://localhost:9000']
 
 AUTH_USER_MODEL = "analytics.User"
 

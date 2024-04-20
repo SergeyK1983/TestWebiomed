@@ -33,6 +33,7 @@ services:
       context: .
     image: consumer_backend:latest
     volumes:
+      - .journal:/var/www/consumer/journal
       - static_volume:/var/www/consumer/static
       - media_volume:/var/www/consumer/media
     env_file:

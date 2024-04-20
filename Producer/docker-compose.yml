@@ -23,6 +23,7 @@ services:
       context: .
     image: producer_backend:latest
     volumes:
+      - .journal:/var/www/producer/journal
       - static_volume:/var/www/producer/static
       - media_volume:/var/www/producer/media
     env_file:

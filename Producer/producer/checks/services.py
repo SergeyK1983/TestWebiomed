@@ -3,6 +3,7 @@ import json
 import logging
 from pathlib import Path
 from datetime import datetime
+from producer.settings import KAFKA_CONFIG
 
 from .models import Transaction
 import sys, types
@@ -18,12 +19,18 @@ from kafka.errors import KafkaError
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 FILE = os.path.join(BASE_DIR, 'logs/checks.log')
+FILE_JOURNAL = os.path.join('/var/www/producer/journal', 'journal.csv')
 
 
 def write_checks_log(data):
+    count_items = len(data["items"])
     with open(FILE, mode='a', encoding='utf8') as log:
-        count_items = len(data["items"])
         log.write(f"Записана транзакция, время: {datetime.now()}, "
+                  f"id чека: {data["transaction_id"]}, время по чеку: {data["timestamp"]}, "
+                  f"всего наименований товаров: {count_items}\n")
+
+    with open(FILE_JOURNAL, mode='a', encoding='cp1251') as f:
+        f.write(f"Записана транзакция, время: {datetime.now()}, "
                   f"id чека: {data["transaction_id"]}, время по чеку: {data["timestamp"]}, "
                   f"всего наименований товаров: {count_items}\n")
 
@@ -59,10 +66,10 @@ def send_to_kafka():
     check.update({"items": items})
     json_check = json.dumps(check).encode('utf-8')
 
-    producer = KafkaProducer(bootstrap_servers='kafka:9092')
+    producer = KafkaProducer(bootstrap_servers=KAFKA_CONFIG["bootstrap_servers"])
 
     try:
-        future = producer.send('check_topic', json_check)
+        future = producer.send(topic=KAFKA_CONFIG["topic"], value=json_check)
         result = future.get(timeout=10)
     except KafkaError as e:
         logger.error(f"Ошибка Kafka: {e}")

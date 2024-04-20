@@ -19,7 +19,7 @@ WORKDIR /backend
 RUN pip install -r requirements.txt
 RUN pip install gunicorn
 
-RUN mkdir -p /var/www/consumer/static && mkdir /var/www/consumer/media
+RUN mkdir -p /var/www/consumer/static && mkdir /var/www/consumer/media && mkdir /var/www/consumer/journal
 
 ENTRYPOINT ["/bin/sh", "-c" , "./django_db_wait.sh && ./django_init.sh"]
 

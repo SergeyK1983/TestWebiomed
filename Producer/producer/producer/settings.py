@@ -19,7 +19,7 @@ else:
 if DEBUG:
     CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
 else:
-    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://localhost:8000']
 
 SITE_ID = 1
 
@@ -107,8 +107,8 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT', '5432')
+        'HOST': os.getenv('HOST', 'localhost'),
+        'PORT': os.getenv('PORT', '5437')
     }
 }
 
@@ -149,6 +149,11 @@ else:
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Kafka
+KAFKA_CONFIG = {
+    "bootstrap_servers": os.getenv('BOOTSTRAP_SERVERS', 'localhost:29092'),
+    "topic": os.getenv('TOPIC', 'check_topic'),
+}
 
 # Логирование
 LOGGING = {

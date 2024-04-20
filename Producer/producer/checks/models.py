@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -7,11 +9,11 @@ class Transaction(models.Model):
 
     transaction_id = models.CharField(max_length=150, unique=True, verbose_name="transaction_id")
     timestamp = models.DateTimeField(verbose_name="дата/время")
-    total_amount = models.DecimalField(validators=[MinValueValidator(0.00)], max_digits=9, decimal_places=2,
+    total_amount = models.DecimalField(validators=[MinValueValidator(Decimal(0.00))], max_digits=9, decimal_places=2,
                                        verbose_name="сумма чека")
-    nds_amount = models.DecimalField(validators=[MinValueValidator(0.00)], max_digits=9, decimal_places=2,
+    nds_amount = models.DecimalField(validators=[MinValueValidator(Decimal(0.00))], max_digits=9, decimal_places=2,
                                      verbose_name="сумма НДС")
-    tips_amount = models.DecimalField(validators=[MinValueValidator(0.00)], max_digits=9, decimal_places=2,
+    tips_amount = models.DecimalField(validators=[MinValueValidator(Decimal(0.00))], max_digits=9, decimal_places=2,
                                       null=True, blank=True, verbose_name="сумма чаевых")
     payment_method = models.CharField(max_length=20, verbose_name="метод оплаты")
     place_id = models.CharField(max_length=150, verbose_name="Идентификатор места")
@@ -31,7 +33,7 @@ class Product(models.Model):
 
     product_id = models.CharField(max_length=150, verbose_name="product_id")
     quantity = models.IntegerField(validators=[MinValueValidator(1)], verbose_name="количество")
-    price = models.DecimalField(validators=[MinValueValidator(0.00)], max_digits=9, decimal_places=2,
+    price = models.DecimalField(validators=[MinValueValidator(Decimal(0.00))], max_digits=9, decimal_places=2,
                                 verbose_name="цена")
     category = models.CharField(max_length=150, verbose_name="категория")
     transaction = models.ForeignKey(to=Transaction, to_field="transaction_id", related_name="items",
