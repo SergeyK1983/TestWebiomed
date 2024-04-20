@@ -12,7 +12,7 @@ from kafka.errors import KafkaError
 
 consumer = KafkaConsumer(
     'check_topic',
-    bootstrap_servers='localhost:29092',
+    bootstrap_servers='kafka:9092',
     enable_auto_commit=False
 )
 for msg in consumer:

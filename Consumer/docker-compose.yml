@@ -13,10 +13,14 @@ services:
       - pgdb:/var/lib/postgresql/data
     ports:
       - "5438:5432"
+    networks:
+      - default
 
   redis:
     image: redis
     container_name: redis
+    networks:
+      - default
     expose:
       - 6379
 #    ports:
@@ -37,6 +41,9 @@ services:
       - 9000
     depends_on:
       - pgdb
+    networks:
+      - kafka_network
+      - default
 
   nginx:
     build:
@@ -51,8 +58,16 @@ services:
       - "9000:80"
     depends_on:
       - django
+    networks:
+      - kafka_network
+      - default
 
 volumes:
   static_volume:
   media_volume:
   pgdb:
+
+networks:
+  kafka_network:
+    name: kafka_docker
+    external: true

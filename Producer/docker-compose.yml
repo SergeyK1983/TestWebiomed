@@ -13,6 +13,8 @@ services:
       - pgdb_pr:/var/lib/postgresql/data
     ports:
       - "5437:5432"
+    networks:
+      - kafka_network
 
   django:
     container_name: backend_producer
@@ -29,6 +31,8 @@ services:
       - 8000
     depends_on:
       - pgdb
+    networks:
+      - kafka_network
 
   nginx:
     build:
@@ -43,8 +47,15 @@ services:
       - "8000:80"
     depends_on:
       - django
+    networks:
+      - kafka_network
 
 volumes:
   static_volume:
   media_volume:
   pgdb_pr:
+
+networks:
+  kafka_network:
+    name: kafka_docker
+    external: true

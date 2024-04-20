@@ -8,8 +8,10 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update && apk upgrade && apk add bash
 RUN python -m pip install --upgrade pip
 RUN mkdir /backend
+RUN mkdir /logs
 
 COPY ./producer /backend
+COPY ./logs /logs
 COPY requirements.txt /backend
 
 WORKDIR /backend

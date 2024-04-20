@@ -59,7 +59,7 @@ def send_to_kafka():
     check.update({"items": items})
     json_check = json.dumps(check).encode('utf-8')
 
-    producer = KafkaProducer(bootstrap_servers='localhost:29092')
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')
 
     try:
         future = producer.send('check_topic', json_check)

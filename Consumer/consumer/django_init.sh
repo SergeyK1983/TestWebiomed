@@ -15,7 +15,7 @@ echo "Celery ... "
 celery -A consumer worker -l INFO --detach
 celery -A consumer beat -l INFO --detach
 
-#python consumer.py &
+python /kafka_read/consumer.py &
 
 echo "Run ... "
 gunicorn consumer.wsgi:application --bind 0.0.0.0:9000
