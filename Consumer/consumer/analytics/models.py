@@ -137,7 +137,7 @@ class Category(models.Model):
         ordering = ["id", "location"]
 
     def __str__(self):
-        return f"Категории: {self.location}"
+        return f"Категория {self.category}: {self.location}"
 
 
 class CategoryAnalytic(models.Model):

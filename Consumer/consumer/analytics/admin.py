@@ -29,7 +29,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class CategoryAnalyticAdmin(admin.ModelAdmin):
     list_display = ("id", "cat", "total_spent", "average_receipt", "date_create")
-    ordering = ("cat", )
+    ordering = ("date_create", "cat")
 
 
 class UserAdmin(admin.ModelAdmin):
